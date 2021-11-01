@@ -38,11 +38,11 @@ module.exports = appInfo => {
 
   config.sequelize = {
     dialect: 'mysql',
-    host: '127.0.0.1',
-    port: 3306,
-    database: 'nideadmin',
+    host: '10.147.17.217',
+    port: 13306,
+    database: 'nideshop',
     username: 'root',
-    password: 'root',
+    password: '1',
   };
 
   return config;

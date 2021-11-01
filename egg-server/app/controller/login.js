@@ -29,6 +29,7 @@ class LoginController extends BaseController {
     // 判断验证码
     const captchaCache = await this.app.cache.get(key);
     console.log(captchaCache, captcha);
+    console.log('!!!!!!!!!!!!!!!!!!!!! ' + captchaCache + ' ::::::::: ' + captcha)
     if (!captchaCache || captchaCache !== captcha.toLowerCase()) {
       this.error(400, '验证码错误');
       return;

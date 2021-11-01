@@ -1,0 +1,70 @@
+https://blog.csdn.net/Acharz/article/details/104266855
+
+eggjs中,自动从数据库直接生成model.
+使用sequelize-auto可以自动生成models
+https://www.npmjs.com/package/sequelize-auto
+
+直接上命令就可以搞定了
+
+# 安装必要的库
+npm install -g sequelize-auto
+# MySQL/MariaDB 数据库安装对应的库,其他数据库请看文档
+npm install -g mysql
+# 从命令行生成models
+sequelize-auto -o './database/models' -h localhost -d databasename -u username -x password -p 3306 
+sequelize-auto -o './model' -h 10.147.17.217 -d nideshop -u root -x 1 -p 13306
+
+
+将sequelize-auto与eggjs结合
+安装必要的库
+
+npm install -D sequelize-auto
+npm install -D mysql
+
+注意:安装参数为-D,是在开发模式使用.
+
+写运行文件 ./database/autoModels.js
+
+'use strict';
+
+const SequelizeAuto = require('sequelize-auto');
+const devConfig = require('../config/config.dev.js')();
+const config = require('../config/config.default.js')({ name: '' });
+const db = {
+  database: devConfig.sequelize.database || config.sequelize.database,
+  host: devConfig.sequelize.host || config.sequelize.host,
+  port: devConfig.sequelize.port || config.sequelize.port,
+  username: devConfig.sequelize.username || config.sequelize.username,
+  password: devConfig.sequelize.password || config.sequelize.password,
+  dialect: devConfig.sequelize.dialect || config.sequelize.dialect,
+};
+
+const auto = new SequelizeAuto(db.database, db.username, db.password, {
+  host: db.host,
+  dialect: db.dialect,
+  directory: './database/models/', // prevents the program from writing to disk
+  port: db.port,
+  additional: {
+    timestamps: false,
+  },
+  // tables: []  // 指定表格
+  // ...
+});
+
+auto.run(function(err) {
+  if (err) throw err;
+
+  console.log(auto.tables); // table list
+  console.log(auto.foreignKeys); // foreign key list
+});
+
+在package.json中添加启动执行项目
+
+# 加入 "scripts" 段中.
+"db:autoModels":"node ./database/autoModels"
+
+执行命令,自动生成models
+
+npm run db:autoModels
+
+生成Models后可以根据里面的内容,稍作修改作为eggjs的model使用.
